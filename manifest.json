@@ -1,6 +1,7 @@
 {
   "name": "OPTICST — Boutique de Lentes Yael",
   "short_name": "OPTICST",
+  "id": "./",
   "description": "Aplicación de gestión para Boutique de Lentes Yael.",
   "start_url": "./",
   "scope": "./",

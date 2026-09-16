@@ -1,1 +1,3 @@
-window.OPTICST_API_URL = "https://script.google.com/macros/s/AKfycbwdzGZp_WdSQuEY8T2WqEdjCHvC03hmMV5FLazmW2cYPq4qtIm28dBH1GB8p0rBragFdA/exec";
+// OPTICST — configuración del backend
+// Después de desplegar Apps Script como Web App, coloca aquí la URL /exec.
+window.OPTICST_API_URL = "PEGAR_AQUI_URL_DEL_WEB_APP_EXEC";

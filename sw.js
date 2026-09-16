@@ -1,4 +1,5 @@
 const CACHE_NAME = "opticst-shell-v1";
+
 const SHELL = [
   "./",
   "./index.html",
@@ -32,18 +33,24 @@ self.addEventListener("fetch", (event) => {
   const request = event.request;
   const url = new URL(request.url);
 
-  // Never intercept the Apps Script backend.
-  if (url.hostname === "script.google.com" || url.hostname.endsWith(".googleusercontent.com")) {
+  // El backend de Apps Script jamás debe ser interceptado por la PWA.
+  if (
+    url.hostname === "script.google.com" ||
+    url.hostname.endsWith(".googleusercontent.com")
+  ) {
     return;
   }
 
-  // Navigation: network first, then cached app shell.
+  // Navegación: red primero; si no hay red, shell local.
   if (request.mode === "navigate") {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put("./index.html", copy));
+          if (response && response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME)
+              .then((cache) => cache.put("./index.html", copy));
+          }
           return response;
         })
         .catch(() => caches.match("./index.html"))
@@ -51,15 +58,17 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Local static assets: cache first, then network.
+  // Recursos locales: caché primero, luego red.
   if (url.origin === self.location.origin) {
     event.respondWith(
       caches.match(request).then((cached) => {
         if (cached) return cached;
+
         return fetch(request).then((response) => {
           if (response && response.ok) {
             const copy = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+            caches.open(CACHE_NAME)
+              .then((cache) => cache.put(request, copy));
           }
           return response;
         });
